@@ -9,7 +9,6 @@ from app.routes import channels, icps, briefens, jobs, videos
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await get_pool()
     yield
 
 
