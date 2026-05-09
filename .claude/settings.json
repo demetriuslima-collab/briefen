@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(uv pip *)",
+      "Bash(brew list *)",
+      "Bash(pip3.11 install *)",
+      "Bash(python3.11 -m uv pip install --system -e .)",
+      "Bash(python3.11 -m uvicorn app.main:app --reload --port 8000)",
+      "Bash(curl -s http://localhost:8000/health)",
+      "Bash(xargs kill -9)",
+      "Bash(curl -s -X POST http://localhost:8000/channels -H 'Origin: http://localhost:3001' -H 'Content-Type: application/json' -H 'Authorization: Bearer test' -d '{\"url\":\"test\"}')",
+      "Bash(curl -sv -X POST http://localhost:8000/channels -H 'Origin: http://localhost:3001' -H 'Content-Type: application/json' -H 'Authorization: Bearer test' -d '{\"url\":\"test\"}')",
+      "Bash(python3.11 -c ' *)",
+      "Bash(python3.11 -m uv pip install --system -q pypdf python-docx python-multipart)",
+      "Bash(psql 'postgresql://postgres:kf\\\\!eJadcD-5T%25Y8@db.ssgrmwuuvxlgqdpkexpu.supabase.co:5432/postgres' -c ' *)",
+      "Bash(python3 -c \"import asyncpg\")",
+      "Bash(pip3 show *)",
+      "Bash(/opt/homebrew/Cellar/python@3.11/3.11.15/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python -c ' *)",
+      "Bash(curl -s 'https://ssgrmwuuvxlgqdpkexpu.supabase.co/rest/v1/channels?select=id,name&limit=1' -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzZ3Jtd3V1dnhsZ3FkcGtleHB1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODE2MzA4MiwiZXhwIjoyMDkzNzM5MDgyfQ.1TBGUST1Zwf1PAgdL5QDkIPZbczIm7oQcCiqvgS_NPM' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzZ3Jtd3V1dnhsZ3FkcGtleHB1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODE2MzA4MiwiZXhwIjoyMDkzNzM5MDgyfQ.1TBGUST1Zwf1PAgdL5QDkIPZbczIm7oQcCiqvgS_NPM')",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -s 'https://ssgrmwuuvxlgqdpkexpu.supabase.co/rest/v1/videos?select=id,title,transcripts\\(video_id\\),summaries\\(video_id\\)&channel_id=eq.990c351a-bae4-46da-95d2-ba2f17851eb5&limit=5' -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzZ3Jtd3V1dnhsZ3FkcGtleHB1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODE2MzA4MiwiZXhwIjoyMDkzNzM5MDgyfQ.1TBGUST1Zwf1PAgdL5QDkIPZbczIm7oQcCiqvgS_NPM' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzZ3Jtd3V1dnhsZ3FkcGtleHB1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODE2MzA4MiwiZXhwIjoyMDkzNzM5MDgyfQ.1TBGUST1Zwf1PAgdL5QDkIPZbczIm7oQcCiqvgS_NPM')",
+      "Bash(npm run *)",
+      "Bash(echo \"Web PID: $!\")",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}
