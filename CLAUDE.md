@@ -75,21 +75,47 @@ run_briefen (independente)
 - `POST /briefens` cria um briefen, `GET /briefens/{id}` retorna o resultado
 - Nunca usar travessões (—) em copy. Nunca "vale destacar", "é importante notar"
 
+## Deploy de produção
+
+- **Frontend:** Vercel — `https://briefen.vercel.app`
+- **API:** Railway — `https://briefen-production.up.railway.app` (porta 8080)
+- **Worker:** Railway — serviço separado, mesmo repo, CMD `python -m app.worker`
+- **Supabase:** projeto `ssgrmwuuvxlgqdpkexpu`, região `sa-east-1` (São Paulo)
+
 ## Variáveis de ambiente
 
-**`apps/web/.env.local`**
+**Vercel (frontend)**
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co   # sem db.
+NEXT_PUBLIC_SUPABASE_URL=https://ssgrmwuuvxlgqdpkexpu.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...   # anon public (legacy), NÃO a publishable key sb_publishable_...
+NEXT_PUBLIC_API_URL=https://briefen-production.up.railway.app   # sem barra no final
+```
+
+**`apps/web/.env.local` (local)**
+```
+NEXT_PUBLIC_SUPABASE_URL=https://ssgrmwuuvxlgqdpkexpu.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-**`apps/api/.env`**
+**Railway (API)**
 ```
-SUPABASE_URL=https://xxxx.supabase.co               # sem db.
+SUPABASE_URL=https://ssgrmwuuvxlgqdpkexpu.supabase.co
 SUPABASE_SERVICE_KEY=...
-SUPABASE_JWT_SECRET=...                              # de JWT Keys no Supabase
-DATABASE_URL=postgresql://postgres:...@db.xxxx...
+SUPABASE_JWT_SECRET=...
+DATABASE_URL=postgresql://postgres.ssgrmwuuvxlgqdpkexpu:[SENHA_ENCODED]@aws-1-sa-east-1.pooler.supabase.com:6543/postgres
+YOUTUBE_API_KEY=...
+GROQ_API_KEY=...
+ANTHROPIC_API_KEY=...
+CORS_ORIGINS=["https://briefen.vercel.app"]
+```
+
+**`apps/api/.env` (local)**
+```
+SUPABASE_URL=https://ssgrmwuuvxlgqdpkexpu.supabase.co
+SUPABASE_SERVICE_KEY=...
+SUPABASE_JWT_SECRET=...
+DATABASE_URL=postgresql://postgres:...@db.ssgrmwuuvxlgqdpkexpu.supabase.co:5432/postgres
 YOUTUBE_API_KEY=...
 GROQ_API_KEY=...
 ANTHROPIC_API_KEY=...
@@ -105,10 +131,16 @@ CORS_ORIGINS=["http://localhost:3001"]
 - Jobs de resumo e transcrição precisam de retry manual em 429 (o SDK não faz retry em áudio)
 - `on_auth_user_created` trigger precisa de `SET search_path = public` no Supabase
 - Thumbnail do YouTube pode retornar 429 em desenvolvimento — normal, passa em produção
+- `DATABASE_URL` em produção deve usar o **Transaction Pooler** (porta 6543), não conexão direta (porta 5432 usa IPv6, incompatível com Railway)
+- Senha da DATABASE_URL deve ter caracteres especiais URL-encoded: `python3 -c 'import urllib.parse; print(urllib.parse.quote(input(), safe=""))' <<< 'SENHA'`
+- `NEXT_PUBLIC_API_URL` no Vercel deve ser **sem barra no final** — barra dupla (`//channels`) causa 404
+- Supabase passou a ter novo formato de chave (`sb_publishable_...`) — usar a legacy **anon public** (`eyJ...`) no `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- Pool de conexão DB é criado lazily na primeira requisição (sem startup connection) — primeira request após deploy é mais lenta
+- Circuit breaker do Supabase pooler bloqueia novas conexões após muitas falhas de auth — parar o serviço e aguardar 5-10min para resetar
 
 ## Supabase
 
 - Rodar `0001_initial.sql` e `0002_fixes.sql` no SQL Editor ao criar o projeto
 - Ativar Google OAuth em Authentication → Providers → Google
-- URL Configuration: Site URL e Redirect URLs devem ter a porta correta
+- URL Configuration: Site URL `https://briefen.vercel.app`, Redirect URLs `https://briefen.vercel.app/**`
 - Realtime habilitado para `jobs` e `briefens` via `0002_fixes.sql`
