@@ -81,7 +81,8 @@ async def upsert_videos(conn: Connection, channel_id: str, videos: list[dict]) -
                 published_at, views, likes, comments, thumbnail_url, tags
             ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
             ON CONFLICT (youtube_id) DO UPDATE
-            SET title      = EXCLUDED.title,
+            SET channel_id = EXCLUDED.channel_id,
+                title      = EXCLUDED.title,
                 views      = EXCLUDED.views,
                 likes      = EXCLUDED.likes,
                 comments   = EXCLUDED.comments,
