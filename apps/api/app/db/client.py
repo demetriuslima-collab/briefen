@@ -14,7 +14,7 @@ async def get_pool() -> Pool:
     if _pool is not None:
         return _pool
 
-    delays = [2, 5, 10, 20, 30]
+    delays = [1, 2, 4]
     last_error: Exception | None = None
     for attempt, delay in enumerate(delays, 1):
         try:
@@ -22,6 +22,7 @@ async def get_pool() -> Pool:
                 settings.database_url,
                 min_size=1,
                 max_size=10,
+                statement_cache_size=0,
             )
             return _pool
         except Exception as exc:
