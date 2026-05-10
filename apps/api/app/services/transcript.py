@@ -51,22 +51,7 @@ async def _assemblyai_transcript(youtube_id: str) -> tuple[str, str]:
 
 
 async def get_transcript(youtube_id: str) -> tuple[str, str, str]:
-    """
-    Retorna (content, language, source).
-    Tenta YouTube auto-captions primeiro; se falhar e AssemblyAI estiver configurado,
-    usa AssemblyAI como fallback.
-    """
-    try:
-        content, lang = _youtube_transcript(youtube_id)
-        logger.info("Transcrição YouTube obtida para %s (lang=%s)", youtube_id, lang)
-        return content, lang, "youtube_auto"
-    except ValueError as exc:
-        logger.info("YouTube sem legenda para %s: %s", youtube_id, exc)
-
-    if not settings.assemblyai_api_key:
-        raise ValueError(f"Sem legenda automática disponível para {youtube_id}.")
-
-    logger.info("Tentando AssemblyAI para %s", youtube_id)
-    content, lang = await _assemblyai_transcript(youtube_id)
-    logger.info("Transcrição AssemblyAI obtida para %s (%s, %d palavras)", youtube_id, lang, len(content.split()))
-    return content, lang, "assemblyai"
+    """Retorna (content, language, source). Usa apenas YouTube auto-captions."""
+    content, lang = _youtube_transcript(youtube_id)
+    logger.info("Transcrição YouTube obtida para %s (lang=%s)", youtube_id, lang)
+    return content, lang, "youtube_auto"
