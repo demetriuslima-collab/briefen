@@ -9,9 +9,8 @@ def _youtube_transcript(youtube_id: str) -> tuple[str, str]:
     """Obtém legenda do YouTube. Prioriza pt/en; aceita qualquer idioma como fallback."""
     from youtube_transcript_api import YouTubeTranscriptApi
 
-    api = YouTubeTranscriptApi()
     try:
-        transcript_list = api.list_transcripts(youtube_id)
+        transcript_list = YouTubeTranscriptApi.list_transcripts(youtube_id)
     except Exception as exc:
         raise ValueError(f"Não foi possível listar legendas para {youtube_id}: {exc}") from exc
 
