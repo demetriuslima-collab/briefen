@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     youtube_api_key: str
     groq_api_key: str
     anthropic_api_key: str
+    assemblyai_api_key: str = ""
     environment: str = "development"
     cors_origins: list[str] = ["http://localhost:3000"]
 
