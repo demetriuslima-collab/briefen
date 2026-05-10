@@ -6,39 +6,20 @@ logger = logging.getLogger(__name__)
 
 
 def _youtube_transcript(youtube_id: str) -> tuple[str, str]:
-    """Obtém legenda do YouTube. Prioriza pt/en; aceita qualquer idioma como fallback."""
+    """Obtém legenda do YouTube. Tenta pt/pt-BR/en/en-US em ordem."""
     from youtube_transcript_api import YouTubeTranscriptApi
 
-    try:
-        transcript_list = YouTubeTranscriptApi.list_transcripts(youtube_id)
-    except Exception as exc:
-        raise ValueError(f"Não foi possível listar legendas para {youtube_id}: {exc}") from exc
-
-    preferred = ["pt", "pt-BR", "en", "en-US"]
-
-    candidates: list = []
-    try:
-        candidates.append(transcript_list.find_manually_created_transcript(preferred))
-    except Exception:
-        pass
-    try:
-        candidates.append(transcript_list.find_generated_transcript(preferred))
-    except Exception:
-        pass
-    if not candidates:
-        candidates = list(transcript_list)
-
-    for t in candidates:
+    api = YouTubeTranscriptApi()
+    for lang in ["pt", "pt-BR", "en", "en-US"]:
         try:
-            snippets = t.fetch()
-            content = " ".join(s.text for s in snippets).strip()
+            transcript = api.fetch(youtube_id, languages=[lang])
+            content = " ".join(t.text for t in transcript).strip()
             if content:
-                logger.debug("Legenda encontrada para %s: %s (gerada=%s)", youtube_id, t.language_code, t.is_generated)
-                return content, t.language_code[:2]
+                return content, lang[:2]
         except Exception:
             continue
 
-    raise ValueError(f"Sem legenda disponível para {youtube_id}.")
+    raise ValueError(f"Sem legenda automática disponível para {youtube_id}.")
 
 
 def _assemblyai_transcript_sync(youtube_id: str) -> tuple[str, str]:
