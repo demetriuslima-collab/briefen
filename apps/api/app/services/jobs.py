@@ -152,7 +152,7 @@ async def _handle_transcribe_video(job_id: str, payload: dict) -> None:
     try:
         row = await pool.fetchrow(
             """
-            SELECT v.youtube_id, c.workspace_id
+            SELECT v.youtube_id, v.description, c.workspace_id
             FROM videos v
             JOIN channels c ON c.id = v.channel_id
             WHERE v.id = $1
@@ -165,8 +165,16 @@ async def _handle_transcribe_video(job_id: str, payload: dict) -> None:
 
         youtube_id = row["youtube_id"]
         workspace_id = str(row["workspace_id"])
+        description = (row["description"] or "").strip()
 
-        content, language, source = await get_transcript(youtube_id)
+        try:
+            content, language, source = await get_transcript(youtube_id)
+        except ValueError as exc:
+            if not description:
+                await mark_job_failed(job_id, str(exc))
+                return
+            logger.info("Sem legenda para %s, usando descrição como fallback.", youtube_id)
+            content, language, source = description, "pt", "description"
         word_count = len(content.split())
 
         async with pool.acquire() as conn:
