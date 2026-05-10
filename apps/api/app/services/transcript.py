@@ -30,7 +30,7 @@ def _assemblyai_transcript_sync(youtube_id: str) -> tuple[str, str]:
 
     url = f"https://www.youtube.com/watch?v={youtube_id}"
     config = aai.TranscriptionConfig(
-        speech_model=aai.SpeechModel.best,
+        speech_models=["universal-3-pro"],
         language_code="pt",
     )
 
